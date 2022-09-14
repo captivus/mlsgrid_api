@@ -160,5 +160,5 @@ cython_debug/
 #.idea/
 
 # Local test files for MLSGridAPI
-*_output_file.json
-*_modification_timestamp.txt
+_output_file*.json
+_modification_timestamp*.txt
