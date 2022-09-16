@@ -1,8 +1,8 @@
 from mlsgrid_api import MLSGridAPI
 
-# Testing in DEBUG mode
-mred = MLSGridAPI(debug=True)
-mred._DEBUG_file_storage_cleanup()
+# Testing in TEST mode
+mred = MLSGridAPI(debug=True, test=True)
+mred._TEST_file_storage_cleanup()
 
 # Test replication of Property resource
 mred.replicate_property(initial=True)
@@ -22,9 +22,9 @@ mred.replicate_openhouse()
 
 
 '''
-# # Testing outside of DEBUG mode
-mred = MLSGridAPI()
-mred._DEBUG_file_storage_cleanup()
+# # Testing outside of TEST mode
+mred = MLSGridAPI(debug=True)
+mred._TEST_file_storage_cleanup()
 
 # Test replication of Property resource
 mred.replicate_property(initial=True)
