@@ -24,7 +24,6 @@ class MLSGridAPI():
         self.PROPERTY_URL = self.MLSGRID_API_URL + 'Property/'
         self.MEMBER_URL = self.MLSGRID_API_URL + 'Member/'
         self.OFFICE_URL = self.MLSGRID_API_URL + 'Office/'
-        # TODO: complete support for OpenHouse replication (writing of records doesn't yet work)
         self.OPENHOUSE_URL = self.MLSGRID_API_URL + 'OpenHouse/'
 
         # Expand all resources by default (user can override)
@@ -127,11 +126,12 @@ class MLSGridAPI():
             )
         
         else:
-            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and ModificationTimestamp gt {latest_timestamp}&$expand={expand}'.format(
+            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and ModificationTimestamp gt {latest_timestamp}{expand}'.format(
                 resource_name_url=resource_name_url,
                 mls_system=self.MLS_SYSTEM,
                 latest_timestamp=self.get_latest_timestamp(resource_name=resource_name),
-                expand=self.EXPAND,
+                #expand=self.EXPAND,
+                expand='' if resource_name == 'OpenHouse' else '&$expand=' + self.EXPAND
             )
 
         # TESTING:  Limit number of records returned
@@ -158,7 +158,6 @@ class MLSGridAPI():
         if self.DEBUG:  print(response)
 
         # Write records to database
-        # FIXME:  for OpenHouse records, as this JSON schema isn't returned
         self.write_records(records=response.json()['value'], resource_name=resource_name, output_to='file')
 
         # set next_link to enable looping
@@ -186,10 +185,9 @@ class MLSGridAPI():
         '''Replicates the Office resource of the MLSGrid API'''
         self._replicate(resource_name='Office', initial=initial, session=session, next_link=next_link)
 
-    # TODO: complete support for OpenHouse replication
-    # def replicate_openhouse(self, initial=False, session=None, next_link=None):
-    #     '''Replicates the OpenHouse resource of the MLSGrid API'''
-    #     self._replicate(resource_name='OpenHouse', initial=initial, session=session, next_link=next_link)
+    def replicate_openhouse(self, initial=False, session=None, next_link=None):
+        '''Replicates the OpenHouse resource of the MLSGrid API'''
+        self._replicate(resource_name='OpenHouse', initial=initial, session=session, next_link=next_link)
 
     # TODO: tailor output files for each resource
     # TODO: overwrite output file on initial replication, otherwise expect output file to exist

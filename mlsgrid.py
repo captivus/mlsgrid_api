@@ -4,17 +4,22 @@ from mlsgrid_api import MLSGridAPI
 mred = MLSGridAPI(debug=True)
 mred._DEBUG_file_storage_cleanup()
 
-# Test replication of Property resource
-mred.replicate_property(initial=True)
-mred.replicate_property()
+# # Test replication of Property resource
+# mred.replicate_property(initial=True)
+# mred.replicate_property()
 
-# Test replication of Member resource
-mred.replicate_member(initial=True)
-mred.replicate_member()
+# # Test replication of Member resource
+# mred.replicate_member(initial=True)
+# mred.replicate_member()
 
-# Test repliication of Office resource
-mred.replicate_office(initial=True)
-mred.replicate_office()
+# # Test repliication of Office resource
+# mred.replicate_office(initial=True)
+# mred.replicate_office()
+
+# Waiting for full implementation ...
+# Test replication of OpenHouse resource
+mred.replicate_openhouse(initial=True)
+mred.replicate_openhouse()
 
 
 # # Testing outside of DEBUG mode
@@ -32,9 +37,3 @@ mred.replicate_office()
 # # Test repliication of Office resource
 # mred.replicate_office(initial=True)
 # mred.replicate_office()
-
-
-# Waiting for full implementation ...
-# Test replication of OpenHouse resource
-# mred.replicate_openhouse(initial=True)
-# mred.replicate_openhouse()
