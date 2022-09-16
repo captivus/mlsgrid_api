@@ -49,8 +49,6 @@ class MLSGridAPI():
         self.OUTPUT_FILE_PREFIX = '_output_file_'
 
         # Latest ModificationTimestamp
-        # TODO: remove this starter value -- used only in testing prior to DB setup
-        # TODO: tailor to each 
         self.modification_timestamp = {}
         #self.modification_timestamp['Property'] = '2021-05-04T20:27:18.208Z'
         #self.modification_timestamp['Member'] = ''
@@ -59,7 +57,6 @@ class MLSGridAPI():
         self.modification_timestamp['Office'] = ''
         self.modification_timestamp['OpenHouse'] = ''
 
-    # TODO: tailor to each resource
     def set_modification_timestamp(self, modification_timestamp=None, resource_name=None):
         # MLSGrid API docs say that they sort responses by ModificationTimestamp
         # This means we can safely save the last that we process as the latest
@@ -109,34 +106,28 @@ class MLSGridAPI():
         #   * Implement some useful logging
         #       * Advise when starting & completing replication jobs
         #       * Advise of errors (and their contents)
-        #   * Add $top / max_records support later ... the API knows how to manage this in the interim
-
-        # if initial == True:
-        #     URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and MlgCanView eq true&$expand={expand}'.format(
-        #         resource_name_url=resource_name_url,
-        #         mls_system=self.MLS_SYSTEM,
-        #         expand=self.EXPAND
-        #     )
         
         if initial == True:
-            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and MlgCanView eq true{expand}'.format(
+            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and MlgCanView eq true{expand}&$top={max_records}'.format(
                 resource_name_url=resource_name_url,
                 mls_system=self.MLS_SYSTEM,
-                expand='' if resource_name == 'OpenHouse' else '&$expand=' + self.EXPAND
+                expand='' if resource_name == 'OpenHouse' else '&$expand=' + self.EXPAND,
+                max_records= self.DEBUG_MAX_RECORDS if self.DEBUG else 1_000
             )
         
         else:
-            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and ModificationTimestamp gt {latest_timestamp}{expand}'.format(
+            URL = '{resource_name_url}?$filter=OriginatingSystemName eq {mls_system} and ModificationTimestamp gt {latest_timestamp}{expand}&$top={max_records}'.format(
                 resource_name_url=resource_name_url,
                 mls_system=self.MLS_SYSTEM,
                 latest_timestamp=self.get_latest_timestamp(resource_name=resource_name),
                 #expand=self.EXPAND,
-                expand='' if resource_name == 'OpenHouse' else '&$expand=' + self.EXPAND
+                expand='' if resource_name == 'OpenHouse' else '&$expand=' + self.EXPAND,
+                max_records= self.DEBUG_MAX_RECORDS if self.DEBUG else 1_000
             )
 
         # TESTING:  Limit number of records returned
         if self.DEBUG:
-            URL = URL + '&$top=' + str(self.DEBUG_MAX_RECORDS)
+            # URL = URL + '&$top=' + str(self.DEBUG_MAX_RECORDS)
             print('API Request URL = ' + URL)
         
         replication_iterations = 0
@@ -189,8 +180,7 @@ class MLSGridAPI():
         '''Replicates the OpenHouse resource of the MLSGrid API'''
         self._replicate(resource_name='OpenHouse', initial=initial, session=session, next_link=next_link)
 
-    # TODO: tailor output files for each resource
-    # TODO: overwrite output file on initial replication, otherwise expect output file to exist
+
     def write_records(self, records, resource_name=None, output_to='file'):
         if output_to == 'file':
             # We're writing to a file that already exists
