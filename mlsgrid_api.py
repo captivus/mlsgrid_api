@@ -52,7 +52,7 @@ class MLSGridAPI():
 
         # Output file configuration
         self.OUTPUT_FILE_PREFIX = '_output_file_'
-
+ 
         # Latest ModificationTimestamp
         self.modification_timestamp = {}
         #self.modification_timestamp['Property'] = '2021-05-04T20:27:18.208Z'
