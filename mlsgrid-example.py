@@ -1,4 +1,4 @@
-from mlsgrid_api import MLSGridAPI
+from src.mlsgrid_api.mlsgrid_api import MLSGridAPI
 
 # Testing in TEST mode
 mred = MLSGridAPI(debug=True, test=True)
