@@ -12,6 +12,12 @@ description = "Python library for the MLSGrid API"
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.7"
+dependencies = [
+  'requests',
+  'python-dotenv',
+  'pytest',
+  'ratelimit',
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
