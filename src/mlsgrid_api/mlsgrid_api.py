@@ -148,7 +148,7 @@ class MLSGridAPI():
 
     # Implement the ratelimit decorate to limit calls to once per second    
     @sleep_and_retry
-    @limits(calls=1, period=2)
+    @limits(calls=2, period=1)
     def _replication_iteration(self, url=None, session=None, resource_name=None):
         # Post GET request to API
         response = session.get(url=url)
@@ -200,10 +200,12 @@ class MLSGridAPI():
                     json_db = json.load(json_infile)
 
                 for record in records:
-                    metadata = {
-                        'ReplicationTimestamp' : str(dt.datetime.now(tz=self.LOGGING_TZ)),
-                    }
-                    record[f'{self.METADATA_PREFIX}_METADATA'] = metadata
+                    # Create MLSGridAPI metadata entries
+                    replication_timestamp = str(dt.datetime.now(tz=self.LOGGING_TZ))
+                    
+                    # Add MLSGridAPI metadata entries
+                    record[f'{self.METADATA_PREFIX}_ReplicationTimestamp'] = replication_timestamp
+
                     json_db.append(record)
 
                 with open(file=output_file, mode='w') as json_outfile:
@@ -219,10 +221,12 @@ class MLSGridAPI():
                 with open(file=output_file, mode='w') as json_outfile:
                     # TODO: iterate over each record and include metadata entry
                     for record in records:
-                        metadata = {
-                            'ReplicationTimestamp' : str(dt.datetime.now(tz=self.LOGGING_TZ)),
-                        }
-                        record[f'{self.METADATA_PREFIX}_METADATA'] = metadata
+                        # Create MLSGridAPI metadata entries
+                        replication_timestamp = str(dt.datetime.now(tz=self.LOGGING_TZ))
+                        
+                        # Add MLSGridAPI metadata entries
+                        record[f'{self.METADATA_PREFIX}_ReplicationTimestamp'] = replication_timestamp
+
                         json_db.append(record)
 
                     json.dump(obj=records, fp=json_outfile, indent=4)
