@@ -16,7 +16,7 @@ class MLSGridAPI():
     '''
     MLSGridAPI class requires that .env file be present and populated with MLSGrid API token
     '''
-    def __init__(self, mls_system='mred', logging_tz='US/Central', debug=False, test=False):
+    def __init__(self, mls_system='mred', logging_tz='US/Central', debug=False, test=False, metadata_prefix='MLSGridAPI'):
 
         # MLSGrid API v2 endpoint
         self.MLSGRID_API_URL = 'https://api.mlsgrid.com/v2/'
@@ -41,6 +41,9 @@ class MLSGridAPI():
     
         # Timezone to use for logging
         self.LOGGING_TZ = pytz.timezone(logging_tz)
+
+        # Metadata prefix used in creating metadata entry on replicated records
+        self.METADATA_PREFIX = metadata_prefix
         
         # Debug mode
         self.DEBUG = debug
@@ -184,17 +187,23 @@ class MLSGridAPI():
         self._replicate(resource_name='OpenHouse', initial=initial, session=session, next_link=next_link)
 
 
-    def write_records(self, records, resource_name=None, output_to='file'):
-        if output_to == 'file':
-            # We're writing to a file that already exists
+    def write_records(self, records, resource_name=None, output_to='file', aws_dynamodb_table=None):
 
+        if output_to == 'file':
+            
             output_file = self.OUTPUT_FILE_PREFIX + resource_name + '.json'
 
+            # We're writing to a file that already exists
             if os.path.exists(output_file):
+                
                 with open(file=output_file, mode='r') as json_infile:
                     json_db = json.load(json_infile)
 
                 for record in records:
+                    metadata = {
+                        'ReplicationTimestamp' : str(dt.datetime.now(tz=self.LOGGING_TZ)),
+                    }
+                    record[f'{self.METADATA_PREFIX}_METADATA'] = metadata
                     json_db.append(record)
 
                 with open(file=output_file, mode='w') as json_outfile:
@@ -204,12 +213,24 @@ class MLSGridAPI():
 
             # This is the first time we're writing to the file
             if not os.path.exists(output_file):
+
+                json_db = []
+
                 with open(file=output_file, mode='w') as json_outfile:
+                    # TODO: iterate over each record and include metadata entry
+                    for record in records:
+                        metadata = {
+                            'ReplicationTimestamp' : str(dt.datetime.now(tz=self.LOGGING_TZ)),
+                        }
+                        record[f'{self.METADATA_PREFIX}_METADATA'] = metadata
+                        json_db.append(record)
+
                     json.dump(obj=records, fp=json_outfile, indent=4)
                 print(f"[{dt.datetime.now(tz=self.LOGGING_TZ)}] Wrote {str(len(records))} {resource_name} records!")
                 self.set_modification_timestamp(records[len(records)-1]['ModificationTimestamp'], resource_name=resource_name)
         
-        elif output_to == 'database':
+        elif output_to == 'aws_dynamodb':
+            # Requires aws_dynamodb_table object passed to function call
             pass
             
 
