@@ -3,11 +3,11 @@ requires = ['setuptools>=61.0', 'setuptools_scm[toml]>=6.2']
 build-backend = 'setuptools.build_meta'
 
 [tool.setuptools_scm]
+write_to = 'src/mlsgrid_api/_version.py'
 
 [project]
 name = "mlsgrid_api"
 #version = "0.0.6"
-dynamic = ['version']
 authors = [
   { name="captivus", email="366332+captivus@users.noreply.github.com" },
 ]
@@ -27,9 +27,6 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
-
-[tool.setuptools.dynamic]
-version = {attr = 'mlsgrid_api.VERSION'}
 
 [project.urls]
 "Homepage" = "https://github.com/captivus/mlsgrid_api"
