@@ -4,7 +4,7 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = "mlsgrid_api"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="captivus", email="366332+captivus@users.noreply.github.com" },
 ]
@@ -17,6 +17,7 @@ dependencies = [
   'python-dotenv',
   'pytest',
   'ratelimit',
+  'pytz',
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
