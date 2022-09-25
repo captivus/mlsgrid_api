@@ -5,12 +5,10 @@ build-backend = 'setuptools.build_meta'
 [tool.setuptools_scm]
 write_to = 'src/mlsgrid_api/_version.py'
 local_scheme = 'no-local-version'
-#version_scheme = ''
+version_scheme = 'no-guess-dev'
 
 [project]
 name = "mlsgrid_api"
-#version = "0.0.6"
-#version = 'attr: mlsgrid_api.version'
 dynamic = ['version']
 
 authors = [
@@ -34,7 +32,6 @@ classifiers = [
 ]
 
 [tool.setuptools.dynamic]
-# #version = { file = '_version.py' }
 version = { attr = 'mlsgrid_api.version' }
 
 [project.urls]
