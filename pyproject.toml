@@ -16,7 +16,7 @@ authors = [
 ]
 description = "Python library for the MLSGrid API"
 readme = "README.md"
-license = "GPL-3.0-only"
+license = { text="GPL-3.0-only" }
 requires-python = ">=3.7"
 dependencies = [
   'requests',
