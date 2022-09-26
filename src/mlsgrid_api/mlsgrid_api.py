@@ -9,7 +9,7 @@ import pytz
 # From Python distribution
 import os
 import datetime as dt
-import logging
+#import logging
 
 
 class MLSGridAPI():
@@ -80,6 +80,9 @@ class MLSGridAPI():
         load_dotenv()
         MLSGRID_API_TOKEN=os.environ.get('MLSGRID_API_TOKEN')
         # TODO: Test for valid token
+
+        if MLSGRID_API_TOKEN == None:
+            raise ValueError('You must proivde a valid MLSGrid API token in a `.env` file in order to use this library.')
         
         # Build HTTP headers
         session = requests.Session()
